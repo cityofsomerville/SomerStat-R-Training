@@ -1,5 +1,5 @@
 ----
-This is Sam's section
+It is I, Sam, the creator of Miniature-Parakeet.
 ----
 ----
 This is Jessica's section
@@ -17,6 +17,7 @@ This is Kieran's section
 ----
 This is Sabrina's section
 ----
+I think I'll have some ice cream later.
 ----
 This is where we create conflicts section
 ----
