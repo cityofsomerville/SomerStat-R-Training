@@ -13,5 +13,3 @@ This is Sabrina's section
 ----
 This is where we create conflicts section
 ----
-
-
