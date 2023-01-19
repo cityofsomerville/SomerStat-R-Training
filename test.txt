@@ -6,7 +6,7 @@ This is Jessica's section
 ----
 ----
 This is Kieran's section
-----
+Git finally working. Why oh why doesn't it work with OneDrive.
 ----
 This is Sabrina's section
 ----
