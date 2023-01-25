@@ -19,5 +19,7 @@ This is Sabrina's section
 ----
 I think I'll have some ice cream later.
 ----
+~ Conflicts are conflicting ~
+In this section, I am, wanted to add this.
 Pretend there's something interesting here.
 ----
