@@ -1,8 +1,15 @@
 ----
-This is Sam's section
+It is I, Sam, the creator of Miniature-Parakeet.
 ----
 ----
 This is Jessica's section
+
+Section1
+
+Section2
+
+Section3
+
 ----
 ----
 This is Kieran's section
@@ -10,6 +17,7 @@ Git finally working. Why oh why doesn't it work with OneDrive.
 ----
 This is Sabrina's section
 ----
+I think I'll have some ice cream later.
 ----
 This is where we create conflicts section
 ----
