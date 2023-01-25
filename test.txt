@@ -19,8 +19,12 @@ This is Sabrina's section
 ----
 I think I'll have some ice cream later.
 ----
+
+Very excited it is Wednesday!!
+
 ~ Conflicts are conflicting ~
 In this section, I am, wanted to add this.
 
 Here is the part with the merge tool.
+Pretend there's something interesting here.
 ----
