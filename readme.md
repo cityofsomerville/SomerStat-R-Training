@@ -6,7 +6,7 @@ I'm adding this line in GitHub
 
 Here's some stuff about this
 
-## This is the second heading level {#this-is-the-second-heading-level}
+## This is the second heading level
 
 -   Here's a list
 -   bullet point
