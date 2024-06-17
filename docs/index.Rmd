@@ -24,11 +24,14 @@ generateUrl <- function (datasetID) paste(
   sep="/"
 )
 
-## all of this is actually precomputed so the people can pick up anywhere in the excercise
+## all of this is actually pre-computed so the people can pick up anywhere in the exercise
 datasetID <- "pfjr-vzaw"
 url <- generateUrl(datasetID)   
 happinessSurveyData <- RSocrata::read.socrata(url)
+happinessSurveyData$happiness_5pt_num <- as.numeric(happinessSurveyData$happiness_5pt_num)
+happinessSurveyData$police_department_satisfaction_5pt_num <- as.numeric(happinessSurveyData$police_department_satisfaction_5pt_num)
 
+only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or younger") 
 
 tutorial_options(exercise.eval = FALSE,
 exercise.timelimit = 60,
@@ -164,12 +167,59 @@ only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age =
 only17Younger$year
 ```
 
-As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not, but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make is less identifiable. This is especially true when we are dealing with more sensitive data, such as Police or fill in other sensitive data here. 
+As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make is less identifiable. This is especially true when we are dealing with more sensitive data, such as Police or fill in other sensitive data here. 
 
-## Derek add an excercise here
+## Derek add an excercise here about mean/median/stdev QA
 
+Another very standard exercise is finding the mean/median/stdev of data. Let's try this with people's happiness here in Somerville. We convert all of the previous years scales to a 5 point scale in the happiness_5pt_num. It could be interesting to see how to mean/median/stdev over all of the years in the dataset. This exercise is a bit tricky and I'm sure there are perfectly acceptable answers that will not be accepted due to the fact that the checker is a function written by me (Derek) so do your best but don't stress too hard!
+
+```{r filterex9, exercise = TRUE}
+## this dataframe should have four columns: year, mean, median, and stdev with 7 rows.
+
+QAdataframe <- 0 ## TODO
+
+```
+
+```{r filterex9-hint-1}
+
+```
+
+
+```{r filterex9-solution}
+QAdataframe <- happinessSurveyData %>%
+    group_by(year) %>%
+    summarise(mean = mean(happiness_5pt_num, na.rm = TRUE), median = median(happiness_5pt_num, na.rm = TRUE), stdev = sd(happiness_5pt_num, na.rm = TRUE))
+```
+
+```{r filterex9-check}
+
+"Still not sure why there needs to be text here"
+```
+
+## Derek add an excercise here about selecting columns and maybe get rid of rows given some filter
 
 ## Okay you are now ready to start your own project, what does that look like?
 
 This office uses github (kind of I swear) to track coding projects, allow for collaboration between many coders in the office, and add some sense of accountability in the code written. Sam has created a template repo for our projects as well, which includes the usual file format we use. This template is always a suggestion, and each project's needs are slightly different so please do not feel entrapped by it. Nevertheless I will explain how to use github for the limited uses we need in the office. If questions come up please do not hesitate to reach out to Sam or Derek (who will probably ask Sam either way but may be less scary since I'm also an intern). 
+
+### Setting up the repo
+
+Once again foreseeing the making of this training, Sam has already done the work that I will show you how to run to set up a repository for your project.
+
+Firstly if you do not already have a github, make one and have Sam add you to the SomerStat team.
+
+If you download the api_key and the new-repo-from-template-interns files from [here](https://somervillema.sharepoint.com/sites/SomerStat2/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FSomerStat2%2FShared%20Documents%2FTools%2FGitHub%20Helper&viewid=1c921e9c%2Dd682%2D49c9%2D83c3%2Da5ee71285b85) you will be able to very easily create a new repo by running the batch file. A brand-new repo should appear, and you can rename it by going to settings in the top right of the nav pane. This repo includes the usual format that we use in a project, with a, rproj file that is a useful tool for Rstudio, a readme.md per usual github fashion, and finally folders for the data. figures, markdown figures, and scripts. Sam has done a great job explaining this template in the readme. so I will not steal his thunder here. 
+
+### The first git clone
+Now that you have a new repo, and probably have renamed it, we need to get it onto you machine so you can begin coding away in R. Use the terminal to cd into a new folder, and run the command ssh-keygen. Press enter to keep the defaults for all of the questions. There should now be a file called ~/.ssh/id_rsa in the folder you cd'd into, copy the content of that file that into github > Settings ? SSH and GPG Keys > New SSH key > key field and create a SSH key. (Please if you are doing this training get Derek for this part, my advice is entirely untested) Now that we have the proper authentication, we will git clone onto your computer by clicking on the <> Code green button on the github page, and then copying the url shown for HTTPS. You should mpw be able to clone the repo onto your machine by cd'ing into where you want to be in terminal, and running git clone url (where the url is the one you copied from the green code button).
+
+### File management in git
+
+If you use the file explorer to go to the directory you cloned into, you should see a new folder with the name of your repo. You should now do all of the R coding your heart desires until you get to a good break point. I usually check the state of the repo with "git status". You would then "git add ." to add all of the files. At this point I usually do "git status" again to see what all changes I have added, then "git commit -m"This is a commit message where you detail the changes you made in this commit"" stages these changes. Finally, git push will apply these changes to the repo on github. 
+
+### Git branch
+
+If you have a working version of something and want to make changes to be applied only in the future when we are sure our new version also works, we use "git branch". To pick something up and do this, I would cd to the directory, and then "git pull" to get any changes. Then "git branch new-branch-name" will create a branch for you to work on. All commits that you make will be push to this branch. 
+
+This is a very simplified viewing of git, and if it is your first time using it please ask questions of the other people in the office sooner rather than later, as it is a very complicated piece of version control software. I would recommend reading at least one or two intro articles on it and maybe even talking to Sam to set up github desktop which can simplify things.
 
