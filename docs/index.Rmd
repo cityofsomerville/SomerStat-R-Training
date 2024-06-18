@@ -1,5 +1,5 @@
 ---
-title: "Filter observations"
+title: "SomerStat Intern Training"
 output: 
 
 
@@ -169,19 +169,17 @@ only17Younger$year
 
 As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make is less identifiable. This is especially true when we are dealing with more sensitive data, such as Police or fill in other sensitive data here. 
 
-## Derek add an excercise here about mean/median/stdev QA
+## Mean/median/stdev QA
 
-Another very standard exercise is finding the mean/median/stdev of data. Let's try this with people's happiness here in Somerville. We convert all of the previous years scales to a 5 point scale in the happiness_5pt_num. It could be interesting to see how to mean/median/stdev over all of the years in the dataset. This exercise is a bit tricky and I'm sure there are perfectly acceptable answers that will not be accepted due to the fact that the checker is a function written by me (Derek) so do your best but don't stress too hard!
+Another very standard exercise is finding the mean/median/stdev of data. Let's try this with people's happiness here in Somerville. We convert all of the previous years scales to a 5 point scale in the happiness_5pt_num. It could be interesting to see how to mean/median/stdev over all of the years in the dataset. This exercise is a bit tricky and I'm sure there are perfectly acceptable answers that will not be accepted due to the fact that the checker is a function written by me (Derek) so do your best but don't stress too hard! Also [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is some pretty good dplyr documentation that you may find helpful ;)
 
 ```{r filterex9, exercise = TRUE}
 ## this dataframe should have four columns: year, mean, median, and stdev with 7 rows.
-
 QAdataframe <- 0 ## TODO
-
 ```
 
 ```{r filterex9-hint-1}
-
+"I would look into the dplyr package documentation, especially for group_by and summarise."
 ```
 
 
@@ -192,11 +190,30 @@ QAdataframe <- happinessSurveyData %>%
 ```
 
 ```{r filterex9-check}
-
 "Still not sure why there needs to be text here"
 ```
 
-## Derek add an excercise here about selecting columns and maybe get rid of rows given some filter
+## One last dplyr excercise!
+
+Back to the 17 or younger issue, you brought up your QA finding in this week's Happiness Survey meeting and the team was really impressed with this and we've decided to completely overreact to this finding (we can act like there was some really damning information in this or whatever you need to convince yourself this exercise is a real thing we would do, it's hard to find a data cleaning task on our cleaned dataset). We decided to remove each row (survey response) that was from someone who was 17 or younger and decided to drop the age column. You will probably want to refer to that dplyr cheatsheet once again!
+
+```{r filterex10, exercise = TRUE}
+## this dataframe should be just like the happinessSurveyData one, just without the rows that were the 17 or younger and without the age column. 
+happinessDataCleaned <- 0 ## TODO
+```
+
+```{r filterex10-hint-1}
+"I would look into the dplyr package documentation, especially for filter and select. You may also need to look into how you handle NA comparisions"
+```
+
+
+```{r filterex10-solution}
+happinessDataCleaned <- happinessSurveyData %>% filter(!(age == "17 or younger" & !is.na(age))) %>% select(-age)
+```
+
+```{r filterex10-check}
+"Still not sure why there needs to be text here"
+```
 
 ## Okay you are now ready to start your own project, what does that look like?
 
@@ -210,7 +227,7 @@ Firstly if you do not already have a github, make one and have Sam add you to th
 
 If you download the api_key and the new-repo-from-template-interns files from [here](https://somervillema.sharepoint.com/sites/SomerStat2/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FSomerStat2%2FShared%20Documents%2FTools%2FGitHub%20Helper&viewid=1c921e9c%2Dd682%2D49c9%2D83c3%2Da5ee71285b85) you will be able to very easily create a new repo by running the batch file. A brand-new repo should appear, and you can rename it by going to settings in the top right of the nav pane. This repo includes the usual format that we use in a project, with a, rproj file that is a useful tool for Rstudio, a readme.md per usual github fashion, and finally folders for the data. figures, markdown figures, and scripts. Sam has done a great job explaining this template in the readme. so I will not steal his thunder here. 
 
-### The first git clone
+### The first git clone (instructions [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent))
 Now that you have a new repo, and probably have renamed it, we need to get it onto you machine so you can begin coding away in R. Use the terminal to cd into a new folder, and run the command ssh-keygen. Press enter to keep the defaults for all of the questions. There should now be a file called ~/.ssh/id_rsa in the folder you cd'd into, copy the content of that file that into github > Settings ? SSH and GPG Keys > New SSH key > key field and create a SSH key. (Please if you are doing this training get Derek for this part, my advice is entirely untested) Now that we have the proper authentication, we will git clone onto your computer by clicking on the <> Code green button on the github page, and then copying the url shown for HTTPS. You should mpw be able to clone the repo onto your machine by cd'ing into where you want to be in terminal, and running git clone url (where the url is the one you copied from the green code button).
 
 ### File management in git
