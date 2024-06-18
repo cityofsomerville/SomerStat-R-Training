@@ -15,7 +15,7 @@ library(tidyverse)
 library(Lahman)
 library(RSocrata)
 library(stringr)
-
+chooseCRANmirror(ind=1)
 socrataUrl <-"https://data.somervillema.gov/resource" ## not sensitive
 
 generateUrl <- function (datasetID) paste(
