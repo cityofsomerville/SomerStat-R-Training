@@ -7,6 +7,13 @@ learnr::tutorial:
 progressive: true
 allow_skip: true
 runtime: shiny_prerendered
+dependencies:
+  - rmarkdown
+  - shiny
+  - learnr
+  - sys
+  - yaml
+  - curl
 ---
 
 ```{r setup, include=FALSE}
