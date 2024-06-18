@@ -5,7 +5,7 @@ on:
         types: [published]
     workflow_dispatch: {}
    
-name: demo-r-shinylive-app
+name: pushing-r-training-to-github-pages
 
 jobs:
     demo-website:
@@ -40,7 +40,7 @@ jobs:
         - name: Create Shinylive App from working directory files
           shell: Rscript {0}
           run: |
-           shinylive::export("myapp", destdir = "docs")
+           shinylive::export("myapp", destdir = "_site")
 
         # Upload a tar file that will work with GitHub Pages
         # Make sure to set a retention day to avoid running into a cap
