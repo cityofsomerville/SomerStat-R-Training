@@ -5,4 +5,5 @@ if (dir.exists(cache_dir)) {
 }
 rmarkdown::run("docs/index.Rmd")
 
-
+shinylive::export(appdir = "myapp", destdir = "docs")
+httpuv::runStaticServer("docs")
