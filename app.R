@@ -30,7 +30,6 @@ server <- function(input, output, session) {
   observe({
     learnr::run_tutorial(
       name = "docs/index.Rmd"
-      
     )
   })
   
