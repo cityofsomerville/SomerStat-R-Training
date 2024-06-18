@@ -12,7 +12,7 @@ library(stringr)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Hello Shiny!"),
+  titlePanel("App.R in Documents!"),
   
   # iframe to include the learnr tutorial ----
   tags$iframe(
