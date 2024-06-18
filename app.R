@@ -18,7 +18,7 @@ ui <- fluidPage(
   tags$iframe(
     id = "learnr_tutorial",
     style = "height:600px; width:100%; border:none;",
-    src = "index.html"
+    src = "docs/index.html"
   )
   
 )
