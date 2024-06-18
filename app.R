@@ -14,13 +14,7 @@ ui <- fluidPage(
   # App title ----
   titlePanel("App.R in Documents!"),
   
-  # iframe to include the learnr tutorial ----
-  tags$iframe(
-    id = "learnr_tutorial",
-    style = "height:600px; width:100%; border:none;",
-    src = "docs/index.html"
-  )
-  
+
 )
 
 # Define server logic required to render and display the learnr tutorial ----
