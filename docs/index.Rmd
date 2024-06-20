@@ -15,42 +15,40 @@ library(tidyverse)
 library(Lahman)
 library(RSocrata)
 library(stringr)
-chooseCRANmirror(ind=1)
 socrataUrl <-"https://data.somervillema.gov/resource" ## not sensitive
-
 generateUrl <- function (datasetID) paste(
   socrataUrl, 
   paste(datasetID, 'json', sep="."), 
   sep="/"
 )
-
+chooseCRANmirror(ind = 1)
 ## all of this is actually pre-computed so the people can pick up anywhere in the exercise
 datasetID <- "pfjr-vzaw"
 url <- generateUrl(datasetID)   
 happinessSurveyData <- RSocrata::read.socrata(url)
 happinessSurveyData$happiness_5pt_num <- as.numeric(happinessSurveyData$happiness_5pt_num)
 happinessSurveyData$police_department_satisfaction_5pt_num <- as.numeric(happinessSurveyData$police_department_satisfaction_5pt_num)
-
 only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or younger") 
-
 tutorial_options(exercise.eval = FALSE,
 exercise.timelimit = 60,
 # A checker function that compares the expected and actual results
 exercise.checker = function(label, user_code, solution_code, check_code, envir_result, evaluate_result, ...) {
-  if(user_code == solution_code){
-    return(list(correct = TRUE, message = "That's exactly how we did it!"))
-  }
-  user_result <- eval(parse(text = user_code), envir = envir_result)
-  correct_result <- eval(parse(text = solution_code), envir = envir_result)
-  if (nrow(user_result) == nrow(correct_result) && all.equal(user_result, correct_result) == TRUE) {
-    return(list(correct = TRUE, message = "Great job!"))
-  } else {
-    return(list(correct = FALSE, message = "Check your answer and try again."))
-  }
+  tryCatch({
+    if(user_code == solution_code){
+      return(list(correct = TRUE, message = "That's exactly how we did it!"))
+    }
+    user_result <- eval(parse(text = user_code), envir = envir_result)
+    correct_result <- eval(parse(text = solution_code), envir = envir_result)
+    if (nrow(user_result) == nrow(correct_result) && all.equal(user_result, correct_result) == TRUE) {
+      return(list(correct = TRUE, message = "Great job!"))
+    } else {
+      return(list(correct = FALSE, message = "Check your answer and try again."))
+    }
+  }, error = function(e) {
+    return(list(correct = FALSE, message = "There was an error in the code execution."))
+  })
 }
 )
-
-
 knitr::opts_chunk$set(error = TRUE)
 ```
 
@@ -87,21 +85,23 @@ This is roughly the workflow that I use to read data from the Open Data portal.
 First I make sure to load in all the packages, I use pacman to do this nasty install vs load in business for me. 
 ```{r filterex1, exercise = TRUE}
 if (!require(pacman)){
-  install.packages("pacman")
+  install.packages("pacman") ## install pacman if you do not already have it
 }
+library(pacman) ## load pacman into this environment 
+
+## this pacman::p_load abstracts away the above lines of code and this is all you have to do to get started with it!
+
 pacman::p_load(RSocrata, tidyverse) ## this loads in RSocrata and the entire tidyverse, which includes dplyr and many of the packages we use!
 ```
 
 ```{r filterex2, exercise = TRUE}
-
+## to access data on the open data portal, there are a few things you have to set up.
 socrataUrl <-"https://data.somervillema.gov/resource" ## not sensitive
-
 generateUrl <- function (datasetID) paste(
   socrataUrl, 
   paste(datasetID, 'json', sep="."), 
   sep="/"
 )
-
 ```
 
 ```{r filterex3, exercise = TRUE}
@@ -128,7 +128,6 @@ happinessSurveyData <- RSocrata::read.socrata(url)
 
 ```{r filterex3-check}
 "test"
-
 ```
 
 ## Let's Explore this data some!
@@ -167,7 +166,7 @@ only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age =
 only17Younger$year
 ```
 
-As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make is less identifiable. This is especially true when we are dealing with more sensitive data, such as Police or fill in other sensitive data here. 
+As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make it less identifiable. This is especially true when we are dealing with more sensitive data, such as police data or fill in other sensitive datasets that you will work on but currently only live in Anna's brain here. 
 
 ## Mean/median/stdev QA
 
@@ -239,4 +238,3 @@ If you use the file explorer to go to the directory you cloned into, you should 
 If you have a working version of something and want to make changes to be applied only in the future when we are sure our new version also works, we use "git branch". To pick something up and do this, I would cd to the directory, and then "git pull" to get any changes. Then "git branch new-branch-name" will create a branch for you to work on. All commits that you make will be push to this branch. 
 
 This is a very simplified viewing of git, and if it is your first time using it please ask questions of the other people in the office sooner rather than later, as it is a very complicated piece of version control software. I would recommend reading at least one or two intro articles on it and maybe even talking to Sam to set up github desktop which can simplify things.
-
