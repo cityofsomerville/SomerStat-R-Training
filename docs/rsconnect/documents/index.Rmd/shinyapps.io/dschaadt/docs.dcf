@@ -5,6 +5,6 @@ account: dschaadt
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12167012
-bundleId: 11238514
+bundleId: 11239137
 url: https://dschaadt.shinyapps.io/docs/
 version: 1
