@@ -2,7 +2,6 @@
 title: "SomerStat Intern Training"
 output: 
 
-
 learnr::tutorial:
 progressive: true
 allow_skip: true
@@ -15,6 +14,7 @@ library(tidyverse)
 library(Lahman)
 library(RSocrata)
 library(stringr)
+library(httr)
 socrataUrl <-"https://data.somervillema.gov/resource" ## not sensitive
 generateUrl <- function (datasetID) paste(
   socrataUrl, 
@@ -23,12 +23,14 @@ generateUrl <- function (datasetID) paste(
 )
 chooseCRANmirror(ind = 1)
 ## all of this is actually pre-computed so the people can pick up anywhere in the exercise
-datasetID <- "pfjr-vzaw"
-url <- generateUrl(datasetID)   
+datasetID <- "wmeh-zuz2"
+url <- generateUrl(datasetID) 
+
+# 3. Call read.socrata() without the config argument
 happinessSurveyData <- RSocrata::read.socrata(url)
-happinessSurveyData$happiness_5pt_num <- as.numeric(happinessSurveyData$happiness_5pt_num)
-happinessSurveyData$police_department_satisfaction_5pt_num <- as.numeric(happinessSurveyData$police_department_satisfaction_5pt_num)
-only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or younger") 
+happinessSurveyData$happiness_num <- as.numeric(happinessSurveyData$happiness_num)
+
+only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or under") 
 tutorial_options(exercise.eval = FALSE,
 exercise.timelimit = 60,
 # A checker function that compares the expected and actual results
@@ -74,10 +76,6 @@ The data we will be using comes from our annual Happiness Survey (insert descrip
 
 There is a good chance that your time here will include analyzing data in R and/or reading/writing data to/from the Open Data Portal, so I hope this little tutorial is more helpful than harmful.
 
-### Common mistakes
-
-Me (Derek) thinking I can code in R
-
 ## Loading in the Happiness Survey Data from the Open Data Portal
 
 This is roughly the workflow that I use to read data from the Open Data portal.
@@ -113,14 +111,14 @@ happinessSurveyData <- RSocrata::read.socrata(url)
 ```
 
 ```{r filterex3-hint-1}
-# Check for the dataset id here, I typically find it in the url! <https://data.somervillema.gov/Health-Wellbeing/Somerville-Happiness-Survey-Responses/pfjr-vzaw/about_data>
+# Check for the dataset id here, I typically find it in the url! <https://data.somervillema.gov/Health-Wellbeing/Somerville-Happiness-Survey-Responses/wmeh-zuz2/about_data>
 # click Next Hint to see the solution!
 ```
 
 
 ```{r filterex3-solution}
 ## TODO, find the datasetId on the Open Data Portal
-datasetID <- "pfjr-vzaw" 
+datasetID <- "wmeh-zuz2" 
 url <- generateUrl(datasetID) 
 happinessSurveyData <- RSocrata::read.socrata(url) 
 
@@ -134,43 +132,43 @@ happinessSurveyData <- RSocrata::read.socrata(url)
 
 ### Initial QA
 
-Something I often do once the code will compile and run is assume that I've made every mistake possible, so I like to get an overview of the dataset. For a dataset as large as the happiness survey, it can be tough to just open up excel and take a peek, so I often do this in R.
+Something I often do once the code will compile and run is assume that I've made every mistake possible, so I like to get an overview of the dataset. For a dataset as large as the happiness survey, it can be tough to just open up excel and take a peek, so I often do this in R. I usually start by taking a look at what columns we have.
 
 ```{r filterex4, exercise = TRUE}
-dplyr::glimpse(happinessSurveyData)
+happinessSurveyData %>% colnames()
 ```
 
 I also often like to see if any of the rows are obviously junk, so I look to see if whatever unique identifier I'm using is NA.
 ```{r filterex5, exercise = TRUE}
-nrow(happinessSurveyData %>% dplyr::filter(is.na(id)))
+happinessSurveyData %>% dplyr::filter(is.na(id)) %>% nrow()
 ```
 
 As we can see, the team did at least a bit of QA on this dataset before releasing it (thank goodness it would have been embarrassing if we found QA issues in the Happiness Survey this early in an R training).
 
-Besides the joining that I showed you in the beginning, a large amount of what I do in R is dropping columns, especially those that may include sensitive information. A common issue that we have to tackle at SomerStat is a limited number of respondants who fit any of the questions we have talke about. We rarely want uniquely identifying information in any datset we release, and age can be uniquely identifying if it is a unique value from the rest of the dataset. We often group data to solve this problem: for example we have grouped age in the Happiness Survey. 
+Besides the joining that I showed you in the beginning, a large amount of what I do in R is dropping columns, especially those that may include sensitive information. A common issue that we have to tackle at SomerStat is a limited number of respondants who fit any of the questions we have talked about. We rarely want uniquely identifying information in any dataset we release, and age can be uniquely identifying if it is a unique value from the rest of the dataset. We often group data to solve this problem: for example we have grouped age in the Happiness Survey. 
 
 ```{r filterex6, exercise = TRUE}
-unique(happinessSurveyData$age)
+happinessSurveyData %>% dplyr::distinct(age)
 ```
 
 After you have identified the issue with age, and bucketed out the ages you may think the problem is solved; however, you still need to be mindful of the size of these buckets. 
 
 ```{r filterex7, exercise = TRUE}
-table(happinessSurveyData$age)
+happinessSurveyData %>% count(age)
 ```
 
-As we can see, there have only been 8 survey respondents ages 17 or younger that have submitted the Happiness Survey. Let's see what years these responses came in:
+As we can see, there have only been 10 survey respondents ages 17 or younger that have submitted the Happiness Survey. Let's see what years these responses came in:
 
 ```{r filterex8, exercise = TRUE}
-only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or younger") 
-only17Younger$year
+only17Younger <- happinessSurveyData %>% dplyr::filter(happinessSurveyData$age == "17 or under") 
+only17Younger %>% count(year)
 ```
 
-As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data and make it less identifiable. This is especially true when we are dealing with more sensitive data, such as police data or fill in other sensitive datasets that you will work on but currently only live in Anna's brain here. 
+As we can see, there is only one respondent from 2019 that was 17 or younger and responded to the Happiness Survey. Is this a problem? Probably not (but we may actually consider this in a future meeting because it's interesting), but this is exactly the kind of thing that we interrogate the data for to either find obvious problems or allow us to consciously make a decision about whether or not to further aggregate the data in order to make it less identifiable. This is especially true when we are dealing with more sensitive data, such as police data or fill in other sensitive datasets that you will work on but currently only live in Anna's brain here. 
 
 ## Mean/median/stdev QA
 
-Another very standard exercise is finding the mean/median/stdev of data. Let's try this with people's happiness here in Somerville. We convert all of the previous years scales to a 5 point scale in the happiness_5pt_num. It could be interesting to see how to mean/median/stdev over all of the years in the dataset. This exercise is a bit tricky and I'm sure there are perfectly acceptable answers that will not be accepted due to the fact that the checker is a function written by me (Derek) so do your best but don't stress too hard! Also [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is some pretty good dplyr documentation that you may find helpful ;)
+Another very standard exercise is finding the mean/median/stdev of data. Let's try this with people's happiness here in Somerville. We convert all of the previous years scales to a 5 point scale in the happiness_num. It could be interesting to see how to mean/median/stdev over all of the years in the dataset. This exercise is a bit tricky and I'm sure there are perfectly acceptable answers that will not be accepted due to the fact that the checker is a function written by me (Derek) so do your best but don't stress too hard! Also [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is some pretty good dplyr documentation that you may find helpful ;)
 
 ```{r filterex9, exercise = TRUE}
 ## this dataframe should have four columns: year, mean, median, and stdev with 7 rows.
@@ -185,7 +183,9 @@ QAdataframe <- 0 ## TODO
 ```{r filterex9-solution}
 QAdataframe <- happinessSurveyData %>%
     group_by(year) %>%
-    summarise(mean = mean(happiness_5pt_num, na.rm = TRUE), median = median(happiness_5pt_num, na.rm = TRUE), stdev = sd(happiness_5pt_num, na.rm = TRUE))
+    summarise(mean = mean(happiness_num, na.rm = TRUE), 
+              median = median(happiness_num, na.rm = TRUE), 
+              stdev = sd(happiness_num, na.rm = TRUE))
 ```
 
 ```{r filterex9-check}
@@ -207,7 +207,7 @@ happinessDataCleaned <- 0 ## TODO
 
 
 ```{r filterex10-solution}
-happinessDataCleaned <- happinessSurveyData %>% filter(!(age == "17 or younger" & !is.na(age))) %>% select(-age)
+happinessDataCleaned <- happinessSurveyData %>% filter(!(age == "17 or under" & !is.na(age))) %>% select(-age)
 ```
 
 ```{r filterex10-check}
